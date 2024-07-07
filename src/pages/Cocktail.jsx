@@ -1,4 +1,4 @@
-import { useLoaderData } from "react-router";
+import { useLoaderData, Navigate } from "react-router";
 import axios from "axios";
 import Wrapper from "../assets/Wrapper/CocktailPage";
 import { Link } from "react-router-dom";
@@ -8,13 +8,18 @@ const singleCocktailUrl =
 
 export default function Cocktail() {
   const { id, data } = useLoaderData();
+
+  if (!data) return <Navigate to="/" />;
+
   const singleDrink = data.drinks[0];
+
+  // pull out ingredient value if they existed in drinks[0]
   const validIngredients = Object.keys(singleDrink)
     .filter(
       (key) => key.startsWith("strIngredient") && singleDrink[key] !== null
     )
     .map((key) => singleDrink[key]);
-
+  //pull out some key in data
   const {
     strDrink: name,
     strDrinkThumb: image,
@@ -23,6 +28,8 @@ export default function Cocktail() {
     strGlass: glass,
     strInstructions: instructions,
   } = singleDrink;
+
+  //JSX
   return (
     <Wrapper>
       <header>
@@ -50,6 +57,7 @@ export default function Cocktail() {
             <span className="drink-data">glass :</span>
             {glass}
           </p>
+          {/* display ingrediens with used of validIngrediens */}
           <p>
             <span className="drink-data">ingrediens :</span>
             {validIngredients.map((item, index) => {
